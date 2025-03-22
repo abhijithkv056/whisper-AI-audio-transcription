@@ -1,11 +1,18 @@
 import streamlit as st
-from transcribe_audio_copy import transcribe_audio
+from transcribe_audio import AudioTranscriber
 import tempfile
 import os
 
 def main():
     st.title("Audio Transcription App")
     st.write("Upload an audio file to get its transcription using Whisper AI")
+
+    # Initialize the transcriber with caching
+    @st.cache_resource
+    def get_transcriber():
+        return AudioTranscriber()
+
+    transcriber = get_transcriber()
 
     # File uploader
     uploaded_file = st.file_uploader("Choose an audio file", type=['mp3', 'wav', 'm4a'])
@@ -20,8 +27,8 @@ def main():
         if st.button("Transcribe Audio"):
             with st.spinner("Transcribing audio..."):
                 try:
-                    # Get transcription
-                    transcription = transcribe_audio(tmp_file_path)
+                    # Get transcription using the AudioTranscriber class
+                    transcription = transcriber.transcribe_file(tmp_file_path)
                     
                     if transcription:
                         st.success("Transcription completed!")

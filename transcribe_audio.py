@@ -31,8 +31,7 @@ class AudioTranscriber:
             device=self.device,
             generate_kwargs={
                 "language": "en",
-                "task": "transcribe",
-                "return_timestamps": True
+                "task": "transcribe"
             }
         )
         print(f"Model initialized on {self.device}")
@@ -62,35 +61,17 @@ class AudioTranscriber:
             if waveform.shape[0] > 1:
                 waveform = torch.mean(waveform, dim=0, keepdim=True)
             
-            # Ensure single channel and correct shape
-            waveform = waveform.squeeze()
-            if len(waveform.shape) == 1:
-                waveform = waveform.unsqueeze(0)
-            
             # Convert to numpy and ensure correct shape
-            audio_array = waveform.numpy()
+            audio_array = waveform.numpy().squeeze()
             
-            # Process the audio with proper input features
-            inputs = self.processor(
-                audio_array,
-                sampling_rate=16000,
-                return_tensors="pt",
-                return_attention_mask=True
-            ).to(self.device)
-            
-            # Convert input features to numpy array
-            input_features = inputs["input_features"].cpu().numpy()
-            
-            # Use the pipeline for transcription with chunking
+            # Use the pipeline for transcription
             result = self.pipe(
-                input_features,
+                audio_array,
                 chunk_length_s=30,  # Process in 30-second chunks
                 stride_length_s=5   # 5-second overlap between chunks
             )
             
-            # Combine all chunks into a single text
-            full_text = " ".join([chunk["text"] for chunk in result["chunks"]])
-            return full_text
+            return result["text"]
             
         except Exception as e:
             print(f"Error processing {audio_path}: {str(e)}")
