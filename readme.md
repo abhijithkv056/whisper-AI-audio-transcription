@@ -15,7 +15,7 @@ A Streamlit-based web application that transcribes audio files using OpenAI's Wh
 
 Before running the application, make sure you have the following installed:
 
-- Python 3.8 or higher
+- Python 3.10 (required for Streamlit Cloud compatibility)
 - CUDA-capable GPU (recommended for faster processing)
 - FFmpeg (for audio processing)
 
@@ -33,12 +33,17 @@ python -m venv venv
 source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 ```
 
-3. Install the required packages:
+3. Upgrade pip and setuptools:
+```bash
+pip install --upgrade pip setuptools wheel
+```
+
+4. Install the required packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## Local Development
 
 1. Start the Streamlit application:
 ```bash
@@ -53,6 +58,20 @@ streamlit run main.py
 
 5. Wait for the processing to complete and view the transcription
 
+## Streamlit Cloud Deployment
+
+This application is configured for deployment on Streamlit Cloud:
+
+1. Push your code to a GitHub repository
+2. Connect your repository to Streamlit Cloud
+3. The application will automatically deploy using the specified Python version (3.10)
+
+### Deployment Requirements
+
+- `runtime.txt` specifies Python 3.10
+- `requirements.txt` contains pinned package versions for compatibility
+- No problematic dependencies that require Python 3.13+
+
 ## Project Structure
 
 ```
@@ -60,18 +79,23 @@ audio-transcription-app/
 ├── main.py                 # Streamlit web application
 ├── transcribe_audio.py     # Audio transcription class
 ├── requirements.txt        # Project dependencies
+├── runtime.txt            # Python version specification
 ├── .gitignore             # Git ignore file
 └── README.md              # Project documentation
 ```
 
 ## Dependencies
 
-- torch
-- transformers
-- torchaudio
-- streamlit
-- numpy
-- librosa (optional, for additional audio processing)
+- torch==2.0.1
+- transformers==4.30.2
+- torchaudio==2.0.1
+- streamlit==1.24.0
+- numpy==1.24.3
+- librosa==0.10.0
+- tqdm==4.65.0
+- soundfile==0.12.1
+- python-dotenv==1.0.0
+- requests==2.31.0
 
 ## Model Information
 
@@ -84,6 +108,18 @@ Available model options:
 - whisper-medium
 - whisper-large
 - whisper-large-v3
+
+## Troubleshooting
+
+If you encounter installation issues:
+
+1. Make sure you're using Python 3.10 (required for Streamlit Cloud)
+2. Try upgrading pip and setuptools:
+   ```bash
+   pip install --upgrade pip setuptools wheel
+   ```
+3. If specific packages fail to install, try installing them individually
+4. For CUDA-related issues, make sure you have the correct CUDA version installed for your PyTorch version
 
 ## Contributing
 
