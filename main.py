@@ -2,17 +2,44 @@ import streamlit as st
 from transcribe_audio import AudioTranscriber
 import tempfile
 import os
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 
 def main():
+    # Load environment variables (for OpenAI API key)
+    load_dotenv()
+    
     st.title("Audio Transcription App")
-    st.write("Upload an audio file to get its transcription using Whisper AI")
+    st.write("Upload an audio file to get its transcription using Whisper AI and chat analysis")
 
     # Initialize the transcriber with caching
     @st.cache_resource
     def get_transcriber():
         return AudioTranscriber()
 
+    # Initialize LangChain components with caching
+    @st.cache_resource
+    def get_chat_chain():
+        llm = ChatOpenAI()
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", """You are a Call transcription agent. 
+            You are given 911 call transcript and you need to extract the information from the transcript.
+            You need to table the information in a structured format in the form of a chatbot.
+            The information should be presented in following format:
+            Person 1 chat: 
+            Person 2 chat:
+            Person 1 chat:
+            Person 2 chat:
+            ..."""),
+            ("user", "{input}")
+        ])
+        output_parser = StrOutputParser()
+        return prompt | llm | output_parser
+
     transcriber = get_transcriber()
+    chat_chain = get_chat_chain()
 
     # File uploader
     uploaded_file = st.file_uploader("Choose an audio file", type=['mp3', 'wav', 'm4a'])
@@ -32,8 +59,16 @@ def main():
                     
                     if transcription:
                         st.success("Transcription completed!")
-                        st.write("### Transcription:")
+                        
+                        # Display raw transcription
+                        st.write("### Raw Transcription:")
                         st.write(transcription)
+                        
+                        # Process transcription through chat chain
+                        with st.spinner("Analyzing conversation..."):
+                            chat_result = chat_chain.invoke({"input": transcription})
+                            st.write("### Conversation Analysis:")
+                            st.write(chat_result)
                     else:
                         st.error("Failed to transcribe the audio file.")
                 except Exception as e:
