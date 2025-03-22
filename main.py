@@ -25,7 +25,7 @@ def main():
         llm = ChatOpenAI()
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a Call transcription agent. 
-            You are given 911 call transcript and you need to extract the information from the transcript.
+            You are given call transcript and you need to extract the information from the transcript.
             You need to table the information in a structured format in the form of a chatbot.
             The information should be presented in following format:
             Person 1 chat: 
