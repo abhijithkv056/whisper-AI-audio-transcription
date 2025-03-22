@@ -1,0 +1,46 @@
+# Ignore Python bytecode and cache
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore environment files
+.env
+myenv/
+.envrc
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+*.out
+
+# Ignore compiled code
+*.o
+*.so
+*.dll
+*.exe
+
+# Ignore database and data files
+*.sqlite3
+*.csv
+*.tsv
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore model and large files
+*.h5
+*.pth
+*.ckpt
+
+# Ignore node_modules (if using Node.js)
+node_modules/
+
+# Ignore build artifacts
+dist/
+build/
+*.egg-info/

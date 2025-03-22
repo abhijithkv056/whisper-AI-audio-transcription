@@ -1,0 +1,11 @@
+Requirement already satisfied: optree in c:\users\abhij\anaconda3\envs\llms_v4\lib\site-packages (0.12.1)
+Collecting optree
+  Using cached optree-0.14.1-cp310-cp310-win_amd64.whl.metadata (50 kB)
+Requirement already satisfied: typing-extensions>=4.5.0 in c:\users\abhij\anaconda3\envs\llms_v4\lib\site-packages (from optree) (4.12.2)
+Using cached optree-0.14.1-cp310-cp310-win_amd64.whl (296 kB)
+Installing collected packages: optree
+  Attempting uninstall: optree
+    Found existing installation: optree 0.12.1
+    Uninstalling optree-0.12.1:
+      Successfully uninstalled optree-0.12.1
+Successfully installed optree-0.14.1
