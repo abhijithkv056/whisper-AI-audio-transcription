@@ -108,7 +108,7 @@ def main():
     transcriber = AudioTranscriber()
     
     # Transcribe all files in a directory
-    directory_path = "call_101"
+    directory_path = "Audio files"
     if os.path.exists(directory_path):
         transcriptions = transcriber.transcribe_directory(directory_path)
         print("\nAll transcriptions:")
