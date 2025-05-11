@@ -14,6 +14,12 @@ def main():
     st.title("Audio Transcription App")
     st.write("Upload an audio file to get its transcription using Whisper AI and chat analysis")
 
+    # Check for OpenAI API key
+    if not os.getenv("OPENAI_API_KEY"):
+        st.error("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable in Streamlit Cloud secrets.")
+        st.info("To set the API key in Streamlit Cloud:\n1. Go to your app's dashboard\n2. Click on 'Secrets'\n3. Add your OpenAI API key as: OPENAI_API_KEY=your-api-key-here")
+        return
+
     # Initialize the transcriber with caching
     @st.cache_resource
     def get_transcriber():
@@ -22,24 +28,31 @@ def main():
     # Initialize LangChain components with caching
     @st.cache_resource
     def get_chat_chain():
-        llm = ChatOpenAI()
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are a Call transcription agent. 
-            You are given call transcript and you need to extract the information from the transcript.
-            You need to table the information in a structured format in the form of a chatbot.
-            The information should be presented in following format:
-            Person 1 chat: 
-            Person 2 chat:
-            Person 1 chat:
-            Person 2 chat:
-            ..."""),
-            ("user", "{input}")
-        ])
-        output_parser = StrOutputParser()
-        return prompt | llm | output_parser
+        try:
+            llm = ChatOpenAI()
+            prompt = ChatPromptTemplate.from_messages([
+                ("system", """You are a Call transcription agent. 
+                You are given call transcript and you need to extract the information from the transcript.
+                You need to table the information in a structured format in the form of a chatbot.
+                The information should be presented in following format:
+                Person 1 chat: 
+                Person 2 chat:
+                Person 1 chat:
+                Person 2 chat:
+                ..."""),
+                ("user", "{input}")
+            ])
+            output_parser = StrOutputParser()
+            return prompt | llm | output_parser
+        except Exception as e:
+            st.error(f"Error initializing chat chain: {str(e)}")
+            return None
 
     transcriber = get_transcriber()
     chat_chain = get_chat_chain()
+
+    if chat_chain is None:
+        return
 
     # File uploader
     uploaded_file = st.file_uploader("Choose an audio file", type=['mp3', 'wav', 'm4a'])
@@ -75,7 +88,10 @@ def main():
                     st.error(f"An error occurred: {str(e)}")
                 finally:
                     # Clean up the temporary file
-                    os.unlink(tmp_file_path)
+                    try:
+                        os.unlink(tmp_file_path)
+                    except:
+                        pass
 
 if __name__ == "__main__":
     main()

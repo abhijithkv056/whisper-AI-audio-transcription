@@ -10,6 +10,7 @@ __pycache__/
 myenv/
 env/
 .envrc
+.streamlit/ 
 
 # Ignore system files
 .DS_Store
