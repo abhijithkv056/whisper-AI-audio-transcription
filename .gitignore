@@ -8,6 +8,7 @@ __pycache__/
 # Ignore environment files
 .env
 myenv/
+env/
 .envrc
 
 # Ignore system files

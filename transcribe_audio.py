@@ -3,6 +3,7 @@ from transformers import pipeline, AutoModelForSpeechSeq2Seq, AutoProcessor
 import torchaudio
 import os
 import numpy as np
+import librosa
 
 class AudioTranscriber:
     def __init__(self, model_id="openai/whisper-small"):
@@ -49,20 +50,12 @@ class AudioTranscriber:
         try:
             print(f"Processing: {audio_path}")
             
-            # Load audio using torchaudio
-            waveform, sample_rate = torchaudio.load(audio_path)
-            
-            # Resample to 16kHz if needed
-            if sample_rate != 16000:
-                resampler = torchaudio.transforms.Resample(sample_rate, 16000)
-                waveform = resampler(waveform)
+            # Load audio using librosa
+            audio_array, sample_rate = librosa.load(audio_path, sr=16000)
             
             # Convert to mono if stereo
-            if waveform.shape[0] > 1:
-                waveform = torch.mean(waveform, dim=0, keepdim=True)
-            
-            # Convert to numpy and ensure correct shape
-            audio_array = waveform.numpy().squeeze()
+            if len(audio_array.shape) > 1:
+                audio_array = np.mean(audio_array, axis=1)
             
             # Use the pipeline for transcription
             result = self.pipe(
