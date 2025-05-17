@@ -15,7 +15,7 @@ def main():
     st.write("Upload an audio file to get its transcription using Whisper AI and chat analysis")
 
     # Check for OpenAI API key
-    if not os.getenv("OPENAI_API_KEY"):
+    if not os.environ.get("OPENAI_API_KEY"):
         st.error("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable in Streamlit Cloud secrets.")
         st.info("To set the API key in Streamlit Cloud:\n1. Go to your app's dashboard\n2. Click on 'Secrets'\n3. Add your OpenAI API key as: OPENAI_API_KEY=your-api-key-here")
         return
