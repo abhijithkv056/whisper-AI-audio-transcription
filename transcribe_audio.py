@@ -1,10 +1,12 @@
 import os
 import openai
 import streamlit as st
+from dotenv import load_dotenv
+load_dotenv()
 
 class AudioTranscriber:
     def __init__(self):
-        client = openai.OpenAI(api_key=st.secrets["openai"]["api_key"])
+        client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         self.client = client
 
     def transcribe_file(self, audio_path):
